@@ -51,7 +51,7 @@ def getDimensions(path):
 
 if __name__ == "__main__":
 
-	db = shelve.open("%s/seena.slv" % (shelveDir))
+	db = shelve.open("%s/seen.slv" % (shelveDir))
 
 	spotlightDir = "%s/%s" % (homeDir, spotlightDir)
 	files = os.listdir(spotlightDir)
