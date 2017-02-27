@@ -7,6 +7,7 @@ import shelve
 import ctypes
 import shutil
 import struct
+import hashlib
 import subprocess
 
 saveDir = "D:\\Spotlight"
@@ -56,18 +57,21 @@ if __name__ == "__main__":
 	spotlightDir = "%s/%s" % (homeDir, spotlightDir)
 	files = os.listdir(spotlightDir)
 	for img in files:
-		if(db.has_key(img)):
+		originalPath = spotlightDir + img
+		md5sum = hashlib.md5(open(originalPath, 'rb').read()).hexdigest() #in this case we don't need better function than md5
+
+		if(db.has_key(md5sum)):
 			continue
 
-		w, h = getDimensions(spotlightDir + img)
+		w, h = getDimensions(originalPath)
 		if(w < h):
 			continue
 
 		dest = '%s\\%s.jpg' % (tempDir, img)
-		shutil.copy(spotlightDir + img, dest)
+		shutil.copy(originalPath, dest)
 		process = subprocess.Popen(viewer + dest)
 
-		db[img] = True
+		db[md5sum] = True
 		time.sleep(1)
 
 		resp = ctypes.windll.user32.MessageBoxW(0, u"Do you want to save this image?", u"Save this?", 4)
